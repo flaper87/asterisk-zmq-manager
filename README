@@ -28,6 +28,9 @@ USAGE
 1-) Create a config file. See samples/zmq_manager.conf
 2-) Add: load => zmq_manager.so to the modules.conf file
 
+TODO:
+* Valgrind tests
+
 LICENSING
 
 This program is free software: you can redistribute it and/or modify
