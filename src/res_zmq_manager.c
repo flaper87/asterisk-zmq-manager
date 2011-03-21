@@ -410,6 +410,7 @@ ast_str_recv (void *socket) {
     char *string = malloc (size + 1);
     memcpy (string, zmq_msg_data (&message), size);
     string [size] = 0;
+    zmq_msg_close(&message);
     return string;
 }
 
@@ -514,6 +515,11 @@ ast_zmq_thread(void *data) {
 
 
     void *responder = zmq_socket (context, ZMQ_REP);
+    if (responder==NULL) {
+        ERROR("Couldn't created the new socket [%s]\n", strerror(errno));
+        goto leave;
+    }
+    
     if (zmq_bind (responder, ast_str_buffer(pvt->connection_string))==-1) {
         ERROR("Couldn't bind [%s]\n", strerror(errno));
         goto leave;
