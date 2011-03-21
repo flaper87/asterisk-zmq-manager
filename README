@@ -1,6 +1,15 @@
 ZMQ Manager
 Author: Flavio [FlaPer87] Percoco Premoli <flaper87@flaper87.org>
 
+INFO:
+
+This module aims to replicate asterisk manager actions using zmq and json. Right now it just handles the originate
+command. This makes possible to execute MANY calls at the same time. I don't know wheter to extend this module handling
+more calls functionalities or adding more manager's actions. Thoughts?
+
+It would be nice to be able to execute as many calls as possible using a highly scalable socket/protocol and manage them. This would be useful for prediction algorithms.
+
+IMHO, Most of the management actions could be implemented and others that are not in the current manager. Something to think about is the credentials management whether it's useful or not. Thoughts?
 
 DEPENDENCIES:
  * zmq
