@@ -38,6 +38,7 @@ ASTERISK_FILE_VERSION(__FILE__, "$Revision: $")
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdbool.h> 
 #include <sys/time.h>
 #include <sys/mman.h>
 #include <sys/types.h>
@@ -49,6 +50,7 @@ ASTERISK_FILE_VERSION(__FILE__, "$Revision: $")
 // #include <asterisk/manager.h>
 #include <asterisk/cli.h>
 #include <asterisk/module.h>
+#include <asterisk/version.h>
 // #include <asterisk/logger.h>
 // #include <asterisk/strings.h>
 // #include <asterisk/linkedlists.h>
@@ -321,9 +323,11 @@ do_originate(json_t *m) {
     int reason = 0;
     char tmp[256];
     char tmp2[256];
+    
+#if ASTERISK_VERSION_NUM > 10803
     struct ast_format_cap *cap = ast_format_cap_alloc_nolock();
     struct ast_format tmp_fmt;
-
+    
     DEBUG("%s\n", "Checking attributes before calling");
     
     if (!cap) {
@@ -331,7 +335,10 @@ do_originate(json_t *m) {
         goto cleanup;
     }
     ast_format_cap_add(cap, ast_format_set(&tmp_fmt, AST_FORMAT_SLINEAR, 0));
-    
+#else
+    format_t cap = AST_FORMAT_SLINEAR;
+#endif
+
     if (ast_strlen_zero(name)) {
         res = 0;
         goto cleanup;
@@ -370,8 +377,13 @@ do_originate(json_t *m) {
     }
     
     if (!ast_strlen_zero(codecs)) {
+#if ASTERISK_VERSION_NUM > 10803
         ast_format_cap_remove_all(cap);
         ast_parse_allow_disallow(NULL, cap, codecs, 1);
+#else
+        cap = 0;
+        ast_parse_allow_disallow(NULL, &cap, codecs, 1);
+#endif
     }
     
     /* Allocate requested channel variables */
@@ -393,7 +405,9 @@ do_originate(json_t *m) {
     } 
 
 cleanup:
+#if ASTERISK_VERSION_NUM > 10803
     ast_format_cap_destroy(cap);
+#endif
     return res;
 }
 
