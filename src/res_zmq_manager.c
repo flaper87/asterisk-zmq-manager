@@ -643,7 +643,7 @@ _load_module(int reload)
     
     res = 0;
     
-    res |= load_config_string(cfg, "global", "protocol", &zmq_data.connection_string, "tcp://*:967");
+    res |= load_config_string(cfg, "global", "connection_string", &zmq_data.connection_string, "tcp://*:967");
     res |= load_config_number(cfg, "global", "max_workers", &zmq_data.max_workers, 0);
     
     if (res < 0) {
